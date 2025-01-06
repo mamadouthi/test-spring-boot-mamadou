@@ -21,21 +21,21 @@ public class FilmController {
     @GetMapping(path = "{id}")
     public ResponseEntity<FilmResponseDto> getFilm(@PathVariable("id") String id) {
         LOGGER.info(String.format("Getting film (id=%s)", id));
-        var filmDto = filmService.getFilm(Long.parseLong(id));
+        var filmResponseDto = filmService.getFilm(Long.parseLong(id));
 
-        return ResponseEntity.ok().body(filmDto);
+        return ResponseEntity.ok().body(filmResponseDto);
     }
 
     @PostMapping
     public ResponseEntity<FilmResponseDto> addNewFilm(@RequestBody FilmRequestDto filmRequestDto) {
         LOGGER.info("Adding new film");
-        var savedFilmDto = filmService.createFilm(filmRequestDto);
+        var filmResponseDto = filmService.createFilm(filmRequestDto);
         var location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("{id}")
-                .buildAndExpand(savedFilmDto.id())
+                .buildAndExpand(filmResponseDto.id())
                 .toUri();
 
-        return ResponseEntity.created(location).body(savedFilmDto);
+        return ResponseEntity.created(location).body(filmResponseDto);
     }
 }
