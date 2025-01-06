@@ -73,5 +73,5 @@ class FilmControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    //TODO Add missing tests
+    //TODO Add missing test for addNewFilm() and Cucumber tests
 }
