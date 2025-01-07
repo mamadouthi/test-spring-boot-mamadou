@@ -19,9 +19,9 @@ public class FilmController {
     private final FilmService filmService;
 
     @GetMapping(path = "{id}")
-    public ResponseEntity<FilmResponseDto> getFilm(@PathVariable("id") String id) {
+    public ResponseEntity<FilmResponseDto> getFilm(@PathVariable("id") Long id) {
         LOGGER.info(String.format("Getting film (id=%s)", id));
-        var filmResponseDto = filmService.getFilm(Long.parseLong(id));
+        var filmResponseDto = filmService.getFilm(id);
 
         return ResponseEntity.ok().body(filmResponseDto);
     }

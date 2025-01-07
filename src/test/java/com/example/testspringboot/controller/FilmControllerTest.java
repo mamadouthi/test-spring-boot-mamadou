@@ -1,5 +1,6 @@
 package com.example.testspringboot.controller;
 
+import com.example.testspringboot.dto.FilmRequestDto;
 import com.example.testspringboot.dto.FilmResponseDto;
 import com.example.testspringboot.exception.ControllerExceptionHandler;
 import com.example.testspringboot.service.FilmService;
@@ -16,14 +17,14 @@ import java.util.List;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 class FilmControllerTest {
 
     private static final Long FILM_ID = 10L;
-    private static final String TITRE = "Star Wars: The Empire Strikes Back";
-    private static final String DESCRIPTION = "Darth Vader is adamant about turning Luke Skywalker to the dark side.";
+    private static final String TITRE = "Titre";
+    private static final String DESCRIPTION = "Description";
 
     private MockMvc mockMvc;
 
@@ -46,7 +47,7 @@ class FilmControllerTest {
     }
 
     @Test
-    void givenRequestWithValidFilmId_shouldSucceedWith200() throws Exception {
+    void givenRequestWithValidFilmId_whenGetFilm_shouldSucceedWith200() throws Exception {
         // given
 
         // when
@@ -61,7 +62,7 @@ class FilmControllerTest {
     }
 
     @Test
-    void givenRequestWithInValidFilmId_shouldFailWith404() throws Exception {
+    void givenRequestWithInValidFilmId_whenGetFilm_shouldFailWith404() throws Exception {
         // given
         var invalidFilmId = 999L;
 
@@ -73,5 +74,23 @@ class FilmControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    //TODO Add missing test for addNewFilm() and Cucumber tests
+    @Test
+    void givenValidRequest_whenAddNewFilm_shouldSucceedWith200() throws Exception {
+        // given
+        var filmRequestDto = new FilmRequestDto(TITRE, DESCRIPTION, null);
+
+        // when
+        when(filmService.createFilm(filmRequestDto)).thenReturn(filmResponseDto);
+
+        // then
+        mockMvc.perform(post("/api/film")
+                        .contentType("application/json")
+                        .content("{\"titre\":\"Titre\", \"description\":\"Description\"}"))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(FILM_ID))
+                .andExpect(jsonPath("$.titre").value(TITRE))
+                .andExpect(jsonPath("$.description").value(DESCRIPTION));
+    }
+
+    //TODO Add missing Cucumber tests
 }
